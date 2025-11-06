@@ -32,3 +32,8 @@ long_video_buttons = InlineKeyboardMarkup(
     ]
 )
 
+ask_ai_buttons = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Вернуться к просмотру", callback_data="back")]
+    ]
+)

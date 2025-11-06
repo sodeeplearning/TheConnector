@@ -1,5 +1,6 @@
 import os
 import random
+from typing import Self
 from dataclasses import dataclass
 
 import config
@@ -9,6 +10,10 @@ import config
 class Video:
     full_video_path: str
     short_video_path: str
+
+    @property
+    def full_video(self) -> Self:
+        return Video(self.full_video_path, self.full_video_path)
 
 
 def get_video_from_category(video_category: str) -> Video:
