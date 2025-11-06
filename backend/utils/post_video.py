@@ -4,17 +4,13 @@ from moviepy import VideoFileClip
 import config
 
 
-def clean_name(name: str) -> str:
-    return "".join(c for c in name if c.isalnum())
-
-
 def save_and_split_video(
         video_bytes: bytes,
         file_name: str,
         video_category: str,
         chunk_length: int = 60,
 ):
-    file_name = clean_name(file_name)
+    file_name = file_name
 
     full_video_dir = os.path.join(
         config.Paths.videos_storage_path,
