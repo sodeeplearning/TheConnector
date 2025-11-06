@@ -19,7 +19,7 @@ short_video_buttons = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="Посмотреть полную версию видео", callback_data="full_video")],
         [InlineKeyboardButton(text="Задать вопрос ИИ", callback_data="ask_ai")],
-        [InlineKeyboardButton(text="Сменить категорию видео", callback_data="choose_category")],
+        [InlineKeyboardButton(text="Сменить категорию видео", callback_data="watch")],
         [InlineKeyboardButton(text="Следующее видео", callback_data="next_video")],
     ]
 )
@@ -27,7 +27,7 @@ short_video_buttons = InlineKeyboardMarkup(
 long_video_buttons = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="Задать вопрос ИИ", callback_data="ask_ai")],
-        [InlineKeyboardButton(text="Сменить категорию видео", callback_data="choose_category")],
+        [InlineKeyboardButton(text="Сменить категорию видео", callback_data="watch")],
         [InlineKeyboardButton(text="Следующее видео", callback_data="next_video")],
     ]
 )

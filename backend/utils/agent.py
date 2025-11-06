@@ -16,21 +16,11 @@ class AIAgent:
         messages = [
             {
                 "role": "system",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": self.system_prompt,
-                    }
-                ]
+                "text": self.system_prompt,
             },
             {
                 "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": body.text,
-                    }
-                ]
+                "text": body.text,
             }
         ]
 
@@ -39,7 +29,7 @@ class AIAgent:
             "modelUri": f"gpt://{config.Secrets.yandex_folder_id}/yandexgpt/latest",
             "completionOptions": {
                 "stream": False,
-                "maxTokens": 2048,
+                "maxTokens": "2048",
             },
         }
 
@@ -51,17 +41,16 @@ class AIAgent:
                     json=body,
                 ) as response:
                     response.raise_for_status()
+                    data = await response.json()
+                    message = data["result"]["alternatives"][0]["message"]["text"]
+
+                    return AIAgentResponseModel(
+                        text=message,
+                        is_success=True,
+                    )
 
         except Exception as e:
             return AIAgentResponseModel(
                 text=str(e),
                 is_success=False
             )
-
-        data = await response.json()
-        message = data["choices"][0]["message"]["content"]
-
-        return AIAgentResponseModel(
-            text=message,
-            is_success=True,
-        )

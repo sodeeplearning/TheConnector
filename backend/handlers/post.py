@@ -55,7 +55,7 @@ async def process_video(message: types.Message, state: FSMContext):
     )
 
     await state.clear()
-    await message.reply("Вы выложили видео! Что теперь желаете?", reply_markup=final_post_buttons)
+    await message.answer("Вы выложили видео! Что теперь желаете?", reply_markup=final_post_buttons)
 
 
 @router.message(F.text, UploadVideo.waiting_video)
@@ -79,7 +79,7 @@ async def process_video_link(message: types.Message, state: FSMContext):
         text = f"Неизвестная ошибка при скачивании видео: {e}"
 
     await state.clear()
-    await message.reply(text, reply_markup=final_post_buttons)
+    await message.answer(text, reply_markup=final_post_buttons)
 
 
 @router.callback_query(F.data == "post")

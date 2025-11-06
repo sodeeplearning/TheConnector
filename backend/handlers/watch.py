@@ -45,7 +45,13 @@ async def choose_category(callback: types.CallbackQuery, state: FSMContext):
 async def send_short_video(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(WatchVideo.short_video_waiting)
     data = await state.get_data()
-    short_video = get_video_from_category(data["category"])
+
+    try:
+        short_video = get_video_from_category(data["category"])
+    except FileNotFoundError:
+        await callback.message.answer("В этой категории еще нет ни одного видео :(")
+        await watch_video(message=callback.message, state=state)
+        return
 
     await state.update_data(last_video=short_video)
     await state.update_data(last_video_type="short")
@@ -72,10 +78,10 @@ async def send_long_video(callback: types.CallbackQuery, state: FSMContext):
     )
 
 
-@router.message(F.data == "ask_ai")
+@router.callback_query(F.data == "ask_ai")
 async def ask_ai(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(WatchVideo.ask_ai)
-    await callback.message.answer("Введите запрос к ИИ агенту")
+    await callback.answer("Введите запрос к ИИ агенту")
 
 
 @router.message(F.text, WatchVideo.ask_ai)

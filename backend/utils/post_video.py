@@ -1,5 +1,4 @@
 import os
-from tqdm import tqdm
 from moviepy import VideoFileClip
 
 import config
@@ -28,10 +27,17 @@ def save_and_split_video(
     os.makedirs(full_video_dir, exist_ok=True)
     os.makedirs(chunks_dir, exist_ok=True)
 
-    with open(full_video_path, "wb") as f:
-        f.write(video_bytes)
+    with open(full_video_path, "wb") as writing_file:
+        writing_file.write(video_bytes)
 
     clip = VideoFileClip(full_video_path)
+
+    clip.write_videofile(
+        full_video_path,
+        codec="libx264",
+        audio_codec="aac",
+    )
+
     duration = int(clip.duration)
 
     num_chunks = duration // chunk_length
