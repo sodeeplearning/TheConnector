@@ -24,11 +24,11 @@ class UploadVideo(StatesGroup):
 @router.message(Command("post"))
 async def post_video(message: types.Message, state: FSMContext):
     await state.set_state(UploadVideo.choosing_category)
-    await message.reply("Выберете категорию видео: ", reply_markup=categories_buttons)
+    await message.answer("Выберете категорию видео: ", reply_markup=categories_buttons)
 
 
 
-@router.callback_query(F.data.in_(config.categories))
+@router.callback_query(F.data.in_(config.categories), UploadVideo.choosing_category)
 async def choose_category(callback: types.CallbackQuery, state: FSMContext):
     category = callback.data
     await state.update_data(category=category)
