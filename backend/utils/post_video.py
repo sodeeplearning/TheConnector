@@ -7,11 +7,13 @@ import config
 def save_and_split_video(
         video_bytes: bytes,
         file_name: str,
+        video_category: str,
         chunk_length: int = 60,
 ):
     full_video_path = os.path.join(
         config.Paths.videos_storage_path,
         config.Paths.full_videos_storage_path,
+        video_category,
         file_name,
     )
     chunks_dir = os.path.join(
