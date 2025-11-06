@@ -1,11 +1,15 @@
 from aiogram import Router, types, F
 from aiogram.filters import Command
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
+import yt_dlp
+
 import config
+
 from backend.utils.post_video import save_and_split_video
+from backend.utils.yt_download import download_youtube_video
+from backend.keyboards import categories_buttons, final_post_buttons
 
 
 router = Router()
@@ -16,16 +20,11 @@ class UploadVideo(StatesGroup):
     waiting_video = State()
 
 
-@router.message(Command("post"), F.data.is_("post"))
+
+@router.message(Command("post"))
 async def post_video(message: types.Message, state: FSMContext):
-    buttons = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text=c, callback_data=c)]
-            for c in config.categories
-        ]
-    )
     await state.set_state(UploadVideo.choosing_category)
-    await message.reply("Выберете категорию видео: ", reply_markup=buttons)
+    await message.reply("Выберете категорию видео: ", reply_markup=categories_buttons)
 
 
 
@@ -55,9 +54,35 @@ async def process_video(message: types.Message, state: FSMContext):
         video_category=video_category,
     )
 
-    buttons = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="Выложить еще одно видео", callback_data="post")],
-        [InlineKeyboardButton(text="Приступить к просмотру", callback_data="watch")],
-    ])
+    await state.clear()
+    await message.reply("Вы выложили видео! Что теперь желаете?", reply_markup=final_post_buttons)
 
-    await message.reply("Вы выложили видео! Что теперь желаете?", reply_markup=buttons)
+
+@router.message(F.text, UploadVideo.waiting_video)
+async def process_video_link(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    video_category = data["category"]
+
+    try:
+        title, video_bytes = download_youtube_video(message.text)
+
+        save_and_split_video(
+            video_bytes=video_bytes,
+            file_name=title + ".mp4",
+            video_category=video_category,
+        )
+
+        text = "Вы выложили видео! Что теперь желаете?"
+    except yt_dlp.utils.DownloadError:
+        text = "Не удалось выложить видео. Проверьте корректность ссылки"
+    except Exception as e:
+        text = f"Неизвестная ошибка при скачивании видео: {e}"
+
+    await state.clear()
+    await message.reply(text, reply_markup=final_post_buttons)
+
+
+@router.callback_query(F.data == "post")
+async def callback_post_video(callback: types.CallbackQuery, state: FSMContext):
+    await callback.answer()
+    await post_video(message=callback.message, state=state)

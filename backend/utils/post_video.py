@@ -1,4 +1,5 @@
 import os
+from tqdm import tqdm
 from moviepy import VideoFileClip
 
 import config
@@ -10,18 +11,21 @@ def save_and_split_video(
         video_category: str,
         chunk_length: int = 60,
 ):
-    full_video_path = os.path.join(
+    full_video_dir = os.path.join(
         config.Paths.videos_storage_path,
         config.Paths.full_videos_storage_path,
         video_category,
-        file_name,
     )
+
+    full_video_path = os.path.join(full_video_dir, file_name)
+
     chunks_dir = os.path.join(
         config.Paths.videos_storage_path,
         config.Paths.short_videos_storage_path,
         file_name[:file_name.rfind(".")],
     )
 
+    os.makedirs(full_video_dir, exist_ok=True)
     os.makedirs(chunks_dir, exist_ok=True)
 
     with open(full_video_path, "wb") as f:
@@ -43,8 +47,6 @@ def save_and_split_video(
             chunk_path,
             codec="libx264",
             audio_codec="aac",
-            verbose=False,
-            logger=None,
         )
 
     clip.close()
