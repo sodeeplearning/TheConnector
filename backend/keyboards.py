@@ -24,3 +24,11 @@ short_video_buttons = InlineKeyboardMarkup(
     ]
 )
 
+long_video_buttons = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Задать вопрос ИИ", callback_data="ask_ai")],
+        [InlineKeyboardButton(text="Сменить категорию видео", callback_data="choose_category")],
+        [InlineKeyboardButton(text="Следующее видео", callback_data="next_video")],
+    ]
+)
+
