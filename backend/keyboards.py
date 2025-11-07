@@ -4,8 +4,7 @@ import config
 
 
 final_post_buttons = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text="Выложить видео", callback_data="post")],
-    [InlineKeyboardButton(text="Приступить к просмотру", callback_data="watch")]
+    [InlineKeyboardButton(text="Приступить к просмотру", callback_data="watch")],
 ])
 
 categories_buttons = InlineKeyboardMarkup(

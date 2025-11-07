@@ -29,14 +29,13 @@ def save_and_split_video(
     os.makedirs(full_video_dir, exist_ok=True)
     os.makedirs(chunks_dir, exist_ok=True)
 
-    with open(full_video_path, "wb") as writing_file:
+    with open(file_name, "wb") as writing_file:
         writing_file.write(video_bytes)
 
-    clip = VideoFileClip(full_video_path)
+    clip = VideoFileClip(file_name)
 
     clip.write_videofile(
         full_video_path,
-        codec="libx264",
         audio_codec="aac",
     )
 
@@ -53,8 +52,9 @@ def save_and_split_video(
 
         subclip.write_videofile(
             chunk_path,
-            codec="libx264",
             audio_codec="aac",
         )
 
     clip.close()
+
+    os.remove(file_name)

@@ -81,7 +81,7 @@ async def send_long_video(callback: types.CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == "ask_ai")
 async def ask_ai(callback: types.CallbackQuery, state: FSMContext):
     await state.set_state(WatchVideo.ask_ai)
-    await callback.answer("Введите запрос к ИИ агенту")
+    await callback.message.answer("Введите запрос к ИИ агенту")
 
 
 @router.message(F.text, WatchVideo.ask_ai)
